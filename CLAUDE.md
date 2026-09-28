@@ -114,10 +114,16 @@ consistent personal brand — the generators live in that profile repo
    `#projects` `#awards` `#contact`. No per-project routes yet.
 3. **English only.**
 
-Design tokens live in `src/app/globals.css` (`:root` + a
-`prefers-color-scheme: dark` block that re-points the same tokens). Components
-use `bg-surface` / `text-muted` / `border-line` / `text-accent` and never
-`dark:` variants — flipping a token is enough.
+Design tokens live in `src/app/globals.css`. Three blocks write the same token
+set: `:root` (light), the `prefers-color-scheme: dark` block, and
+`:root[data-theme="dark"]` for the explicit toggle. Components use
+`bg-surface` / `text-muted` / `border-line` / `text-accent` and never `dark:`
+variants — flipping a token is enough.
+
+Motion is scroll-linked CSS, not JavaScript: `.reveal` uses
+`animation-timeline: view()` and the header rule uses `animation-timeline:
+scroll()`, both inside `@supports` and `prefers-reduced-motion` guards, so
+there is nothing to hydrate and nothing breaks in Safari or Firefox.
 
 ## Status
 
@@ -128,11 +134,13 @@ Shippable. `npm run build`, `npm run lint` and `npx tsc --noEmit` are clean.
 - `src/app/page.tsx` — composes the six sections.
 - `src/app/opengraph-image.tsx` · `sitemap.ts` · `robots.ts` — generated from
   `src/data` and `src/lib/site.ts`.
-- `src/components/ui/` — `Frame` (corner brackets), `Card`, `Badge`, `Button`,
-  `SectionTitle`.
-- `src/components/layout/` — `Header` (server), `Nav` (only client component:
-  mobile disclosure + active-section highlight), `Footer`.
-- `src/components/sections/` — Hero, About, Skills, Projects, Awards, Contact.
+- `src/components/ui/` — `Container`, `Frame` (corner brackets), `Card`,
+  `Badge`, `Button`, `SectionTitle`.
+- `src/components/layout/` — `Header` (server, carries the scroll-progress
+  rule), `Footer`, and two client components: `Nav` (mobile disclosure +
+  active-section highlight) and `ThemeToggle`.
+- `src/components/sections/` — Hero, About, Skills, Projects, Awards, Contact,
+  plus `HeroSchematic`, an SVG of the stack layers drawn from `skillGroups`.
 
 ### Still missing real assets
 
@@ -143,6 +151,13 @@ Shippable. `npm run build`, `npm run lint` and `npx tsc --noEmit` are clean.
 - Set `NEXT_PUBLIC_SITE_URL` on Vercel (or rely on
   `VERCEL_PROJECT_PRODUCTION_URL`) so canonical, sitemap and robots stop
   pointing at localhost.
+
+### Checking the design
+
+Screenshots are the only reliable check. Headless Chrome with a real viewport
+works: drive it over CDP (`--remote-debugging-port`), emulate 1440x900, force
+the `.reveal` elements visible, then capture clips of the full page. Tall
+`--window-size` screenshots lie, because the hero is sized in `svh`.
 
 ## Git workflow — required
 
