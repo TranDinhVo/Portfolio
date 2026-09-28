@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
@@ -139,6 +140,15 @@ function ProjectLinks({ project }: { project: Project }) {
 
   return (
     <div className="flex flex-wrap items-center gap-5">
+      <Link
+        href={`/projects/${project.slug}`}
+        className="group/link font-mono text-[11px] uppercase tracking-[0.18em] text-accent transition-opacity hover:opacity-70"
+      >
+        Case study{" "}
+        <span aria-hidden className="inline-block transition-transform group-hover/link:translate-x-1">
+          →
+        </span>
+      </Link>
       {isPrivate ? (
         <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-muted">
           <svg viewBox="0 0 24 24" className="size-3.5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>

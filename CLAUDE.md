@@ -97,6 +97,16 @@ CV. Two hard rules:
 His competitive-programming record is a genuine differentiator for a student —
 give it real space on the page, do not bury it in a footer.
 
+### Where project detail comes from
+
+The four private systems are checked out next to this repo
+(`../PayHub`, `../FinanceOS`, `../TrendScope`, `../MonkeyMail`); SPARK and
+Academix live in `D:/Documents/React/`. The `problem`, `architecture`, `facts`
+and `decisions` on each `Project` were read from those repositories — README,
+Prisma schema, folder structure. **Counts are counted, never estimated**: if
+a number in `facts` needs updating, re-count it in the repo rather than
+guessing. Pezura has no local checkout, so it has no case-study body.
+
 ## Related work
 
 His GitHub profile README (`github.com/TranDinhVo`) was built in a
@@ -110,8 +120,10 @@ consistent personal brand — the generators live in that profile repo
 
 1. **Visual direction** — blueprint, reusing the GitHub profile language:
    off-white grid paper, monospace labels, corner brackets, blue accent.
-2. **Single scrolling page** — one route, sections `#about` `#skills`
-   `#projects` `#awards` `#contact`. No per-project routes yet.
+2. **Single scrolling page** for the overview — sections `#about` `#skills`
+   `#projects` `#awards` `#contact` — plus one case-study route per project at
+   `/projects/[slug]`, statically generated. Revised 2026-09-28: the detail
+   the projects deserve does not fit on a card.
 3. **English only.**
 
 Design tokens live in `src/app/globals.css`. Three blocks write the same token
@@ -132,6 +144,8 @@ Shippable. `npm run build`, `npm run lint` and `npx tsc --noEmit` are clean.
 - `src/app/layout.tsx` — real metadata (title template, OG, Twitter, canonical,
   keywords from `skillGroups`), Header + Footer shell.
 - `src/app/page.tsx` — composes the six sections.
+- `src/app/projects/[slug]/page.tsx` — case study per project, prerendered via
+  `generateStaticParams` with its own metadata and canonical.
 - `src/app/opengraph-image.tsx` · `sitemap.ts` · `robots.ts` — generated from
   `src/data` and `src/lib/site.ts`.
 - `src/components/ui/` — `Container`, `Frame` (corner brackets), `Card`,

@@ -37,6 +37,14 @@ export type Project = {
   stack: string[];
   /** Bullet points: what was actually built. */
   highlights: string[];
+  /** Case study — the problem the system had to solve. */
+  problem?: string;
+  /** Case study — how the system is put together. */
+  architecture?: string;
+  /** Countable facts from the repository. Never estimates. */
+  facts?: { label: string; value: string }[];
+  /** Engineering decisions worth defending in an interview. */
+  decisions?: { title: string; detail: string }[];
   /** Shown on the card; keep to 3-4 items. */
   featured: boolean;
 };
