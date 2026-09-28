@@ -26,7 +26,7 @@ function Corner({ className }: { className: string }) {
   return (
     <span
       aria-hidden
-      className={cn("pointer-events-none absolute size-2.5 border-accent", className)}
+      className={cn("pointer-events-none absolute size-3 border-accent", className)}
     />
   );
 }
