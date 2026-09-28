@@ -1,45 +1,71 @@
 @import "tailwindcss";
 
 /*
- * Blueprint visual language — mirrors the GitHub profile README:
- * off-white grid paper, monospace labels, corner brackets, blue accent.
- * Colours are tokens only; dark mode re-points the tokens so components
- * never need `dark:` variants.
+ * Blueprint visual language — same one as the GitHub profile README:
+ * drafting paper, monospace labels, corner brackets, blue accent.
+ *
+ * Light is the default. Dark is applied either by system preference or by
+ * an explicit data-theme on <html>, so every rule below writes the same
+ * token set and components never need a `dark:` variant.
  */
 :root {
-  --background: #f6f6f3;
-  --surface: #fdfdfb;
-  --foreground: #16181d;
-  --muted: #6a6f7a;
-  --line: #d5d6cf;
+  --background: #f3f3f0;
+  --surface: #fbfbf9;
+  --surface-2: #ececeA;
+  --foreground: #13161b;
+  --muted: #5d636e;
+  --line: #dbdcd5;
+  --line-strong: #b6b8af;
   --accent: #2563eb;
+  --accent-ink: #ffffff;
+  --glow: rgba(37, 99, 235, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0c10;
-    --surface: #101319;
-    --foreground: #e7e9ec;
-    --muted: #8b929d;
-    --line: #232832;
-    --accent: #60a5fa;
+  :root:not([data-theme="light"]) {
+    --background: #07090c;
+    --surface: #0d1017;
+    --surface-2: #131722;
+    --foreground: #e9ebef;
+    --muted: #8c94a2;
+    --line: #1d222c;
+    --line-strong: #2b3240;
+    --accent: #5b9dff;
+    --accent-ink: #04101f;
+    --glow: rgba(91, 157, 255, 0.16);
   }
+}
+
+:root[data-theme="dark"] {
+  --background: #07090c;
+  --surface: #0d1017;
+  --surface-2: #131722;
+  --foreground: #e9ebef;
+  --muted: #8c94a2;
+  --line: #1d222c;
+  --line-strong: #2b3240;
+  --accent: #5b9dff;
+  --accent-ink: #04101f;
+  --glow: rgba(91, 157, 255, 0.16);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 html {
-  /* Sticky header is 3.5rem; keep anchor targets clear of it. */
-  scroll-padding-top: 4.5rem;
+  /* Sticky header is 4rem. */
+  scroll-padding-top: 5rem;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -53,42 +79,154 @@ body {
   color: var(--foreground);
 }
 
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
 ::selection {
-  background: color-mix(in oklab, var(--accent) 22%, transparent);
+  background: color-mix(in oklab, var(--accent) 24%, transparent);
 }
 
-/* Graph-paper backdrop. */
-.grid-paper {
-  background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--line) 60%, transparent) 1px, transparent 1px);
-  background-size: 32px 32px;
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
-/* Denser grid used behind the hero, fading out downwards. */
-.grid-paper-hero {
+/* Numerals in stats and years line up in columns. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- surfaces */
+
+/* Drafting paper: 32px grid with a heavier registration dot every 96px. */
+.sheet {
   background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--line) 70%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--line) 70%, transparent) 1px, transparent 1px);
-  background-size: 16px 16px;
-  mask-image: linear-gradient(to bottom, black, transparent 85%);
+    radial-gradient(color-mix(in oklab, var(--line-strong) 70%, transparent) 1px, transparent 1.5px),
+    linear-gradient(to right, color-mix(in oklab, var(--line) 75%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--line) 75%, transparent) 1px, transparent 1px);
+  background-size: 96px 96px, 32px 32px, 32px 32px;
+}
+
+/* Accent wash behind the hero. */
+.hero-glow {
+  background:
+    radial-gradient(60% 55% at 15% 0%, var(--glow), transparent 70%),
+    radial-gradient(45% 45% at 90% 20%, var(--glow), transparent 70%);
 }
 
 .accent-soft {
   background: color-mix(in oklab, var(--accent) 10%, transparent);
 }
 
+/* ------------------------------------------------------------------ motion */
+
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Scroll-linked, so no JavaScript and nothing to hydrate. Browsers without
+   view timelines simply render the content in place. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+.scroll-progress {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+@keyframes scroll-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  .scroll-progress {
+    animation: scroll-progress linear both;
+    animation-timeline: scroll(root);
+  }
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  50% { opacity: 0.3; }
 }
 
 .pulse-dot {
   animation: pulse-dot 2.4s ease-in-out infinite;
 }
 
+.draw-in {
+  stroke-dasharray: var(--dash, 400);
+  stroke-dashoffset: var(--dash, 400);
+  animation: draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  animation-delay: var(--delay, 0s);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .pulse-dot {
+  .pulse-dot,
+  .draw-in,
+  .scroll-progress {
     animation: none;
   }
+
+  .draw-in {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ------------------------------------------------------- theme toggle icons */
+
+.icon-dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .icon-light {
+    display: none;
+  }
+  :root:not([data-theme="light"]) .icon-dark {
+    display: block;
+  }
+}
+
+:root[data-theme="dark"] .icon-light {
+  display: none;
+}
+
+:root[data-theme="dark"] .icon-dark {
+  display: block;
+}
+
+:root[data-theme="light"] .icon-light {
+  display: block;
+}
+
+:root[data-theme="light"] .icon-dark {
+  display: none;
 }
